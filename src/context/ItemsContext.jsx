@@ -12,7 +12,7 @@ const ItemsContextProvider = ({children}) => {
             case 'CREATE_ITEM':
                 return {items: [...state.items, action.payload ]};
             case 'DELETE_ITEM': 
-                return {items: state.items.filter(item => (item !== action.payload._id))}
+                return {items: state.items.filter(item => (item._id !== action.payload._id))}
         }
     })
 
