@@ -1,25 +1,115 @@
+import * as React from "react";
+import AspectRatio from "@mui/joy/AspectRatio";
+import Box from "@mui/joy/Box";
+import Card from "@mui/joy/Card";
+import IconButton from "@mui/joy/IconButton";
+import Typography from "@mui/joy/Typography";
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import { UserContext } from "../context/UserContext";
+import { CartContext } from "../context/CartContext";
 import { useContext } from "react";
-import { ItemsContext } from "../context/ItemsContext";
-import Button from '@mui/material/Button';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { useNavigate } from "react-router-dom";
+import { StyledEngineProvider, CssVarsProvider } from "@mui/joy/styles";
+import { useEffect } from "react";
+import useFetchCart from "../hooks/useFetchCart";
 
+export default function ItemDetails({ item }) {
+  const { user } = useContext(UserContext);
+  const navigate = useNavigate();
+  const { cart } = useFetchCart();
+  const { dispatch: dispatchCart } = useContext(CartContext);
 
-const ItemDetails = ({ item }) => {
+  const incrementCart = async () => {
+    item.count++;
+    await fetch("http://localhost:8000/items/cart/" + item._id, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
+      body: JSON.stringify({
+        name: item.name,
+        price: item.price,
+        image: item.image,
+        count: item.count,
+      }),
+    });
+  };
 
-    const {dispatch} = useContext(ItemsContext)
-
-    const deleteItem = (e) => {
-        console.log(item)
-        dispatch({type:'DELETE_ITEM', payload: item})
+  const createItem = async () => {
+    const response = await fetch("http://localhost:8000/items/cart", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
+      body: JSON.stringify({
+        name: item.name,
+        price: item.price,
+        image: item.image,
+        count: item.count + 1,
+      }),
+    });
+    const json = await response.json();
+    if (response.ok) {
+      dispatchCart({ type: "ADD_CART", payload: json });
     }
+  };
 
-    return (
-        <div className="itemDetails">
-            <h2>{item.name}</h2>
-            <h3>{item.price}</h3>
-            <Button variant="outlined" onClick={deleteItem} startIcon={<DeleteIcon />}>Delete</Button>
-        </div>
-    );
+  const handleAddToCart = async (e, item) => {
+    e.preventDefault();
+    if (!user) {
+      navigate("/login");
+      console.log("user not found");
+    } else {
+      if (cart == null) {
+        console.log("creating new item");
+        createItem();
+      } else {
+        console.log("existing item");
+        incrementCart();
+      }
+    }
+  };
+
+  return (
+    <StyledEngineProvider injectFirst>
+      <CssVarsProvider>
+        <Card variant="outlined" sx={{ width: 200 }}>
+          <Typography level="h2" fontSize="md" sx={{ mb: 1 }}>
+            {item.name}
+          </Typography>
+          <IconButton
+            aria-label="bookmark Bahamas Islands"
+            variant="plain"
+            color="neutral"
+            size="sm"
+            sx={{ position: "absolute", top: "0.5rem", right: "0.5rem", mb: 1 }}
+          ></IconButton>
+          <AspectRatio sx={{ mb: 2 }} objectFit="contain">
+            <img
+              src={item.image}
+              srcSet={item.image}
+              alt="A beautiful landscape."
+            />
+          </AspectRatio>
+          <Box sx={{ display: "flex" }}>
+            <div>
+              <Typography fontSize="lg" fontWeight="lg">
+                ${item.price}
+              </Typography>
+            </div>
+            <IconButton
+              sx={{ ml: "auto", fontWeight: 600 }}
+              color="primary"
+              aria-label="add to shopping cart"
+              onClick={(e) => handleAddToCart(e, item)}
+            >
+              <AddShoppingCartIcon />
+            </IconButton>
+          </Box>
+        </Card>
+      </CssVarsProvider>
+    </StyledEngineProvider>
+  );
 }
-
-export default ItemDetails;

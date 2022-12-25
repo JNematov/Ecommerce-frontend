@@ -1,17 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import CartContextProvider from './context/CartContext';
 import ItemsContextProvider from './context/ItemsContext';
+import ThemeContextProvider from './context/ThemeContext';
 import UserContextProvider from './context/UserContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   // <React.StrictMode>
-    <UserContextProvider>
+  <UserContextProvider>
+    <CartContextProvider>
       <ItemsContextProvider>
-        <App />
+        <ThemeContextProvider>
+          <App />
+        </ThemeContextProvider>
       </ItemsContextProvider>
-    </UserContextProvider>
+    </CartContextProvider>
+  </UserContextProvider>
+
   // </React.StrictMode>
 );
 

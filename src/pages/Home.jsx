@@ -1,49 +1,31 @@
-import { Button } from "@mui/material";
-import { useState } from "react";
+import { Box } from "@mui/system";
 import { useEffect } from "react";
 import { useContext } from "react";
-import ItemDetails from "../components/ItemDetails";
+import CarouselSlide from "../components/CarouselSlide";
 import { ItemsContext } from "../context/ItemsContext";
-import { UserContext } from "../context/UserContext";
-import { useLogout } from "../hooks/useLogout";
 
 const Home = () => {
-    
-    const {user} = useContext(UserContext);
-    const {logout} = useLogout();
-    const {items, dispatch : dispatchItems} = useContext(ItemsContext)
+  const { items, dispatch: dispatchItems } = useContext(ItemsContext);
 
-    const handleLogout = () => {
-        console.log(user)
-        logout()
+  const fetchItems = async () => {
+    const response = await fetch("http://localhost:8000/items/");
+    const json = await response.json();
+    if (response.ok) {
+      dispatchItems({ type: "GET_ITEMS", payload: json });
+    } else {
+      console.log("error fetching");
     }
+  };
 
-    useEffect(() => {
-        const fetchItems = async () => {
-            const response = await fetch('http://localhost:8000/items/', {
-                headers: {
-                    "Authentication": `Bearer ${user.token}`
-                }
-            })
-            const json = await response.json()
-            if(response.ok){
-                console.log(json)
-                dispatchItems({type: 'GET_ITEMS', payload: json})
-            }else{
-                console.log('error fetching')
-            }
-        }
-        if(user){
-            fetchItems();
-        } 
-    }, [dispatchItems, user])
+  useEffect(() => {
+    fetchItems();
+  }, []);
 
-    return ( 
-        <div className="Home">
-            <Button onClick={handleLogout}>Logout</Button>
-            <div>{items && items.map(item => (<ItemDetails item={item}/>))}</div>
-        </div>
-     );
-}
- 
+  return (
+    <Box className="Home" sx={{ width: 1100, mx: "auto" }}>
+      {items && <CarouselSlide items={items} />}
+    </Box>
+  );
+};
+
 export default Home;
