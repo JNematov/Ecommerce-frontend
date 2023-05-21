@@ -5,19 +5,18 @@ import Card from "@mui/joy/Card";
 import IconButton from "@mui/joy/IconButton";
 import Typography from "@mui/joy/Typography";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import { UserContext } from "../context/UserContext";
 import { CartContext } from "../context/CartContext";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { StyledEngineProvider, CssVarsProvider } from "@mui/joy/styles";
-import { useEffect } from "react";
 import useFetchCart from "../hooks/useFetchCart";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 export default function ItemDetails({ item }) {
-  const { user } = useContext(UserContext);
+  const user = useSelector((state) => state.user);
   const navigate = useNavigate();
-  const { cart } = useFetchCart();
-  const { dispatch: dispatchCart } = useContext(CartContext);
+  const { cart, dispatch: dispatchCart } = useContext(CartContext);
 
   const incrementCart = async () => {
     item.count++;

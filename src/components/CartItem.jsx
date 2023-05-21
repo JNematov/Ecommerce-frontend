@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -8,12 +7,12 @@ import Typography from "@mui/material/Typography";
 import { useContext } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { UserContext } from "../context/UserContext";
 import { CartContext } from "../context/CartContext";
 import AspectRatio from "@mui/joy/AspectRatio";
+import { useSelector } from "react-redux";
 
 export default function CartItem({ cartItem }) {
-  const { user } = useContext(UserContext);
+  const user = useSelector((state) => state.user);
   const { dispatch } = useContext(CartContext);
 
   const handleRemove = () => {

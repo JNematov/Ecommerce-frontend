@@ -1,7 +1,5 @@
-import { useContext, useEffect } from "react";
 import CartItem from "../components/CartItem";
-import { CartContext } from "../context/CartContext";
-import { UserContext } from "../context/UserContext";
+
 import { Box } from "@mui/material";
 import useFetchCart from "../hooks/useFetchCart";
 

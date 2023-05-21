@@ -16,11 +16,12 @@ import MailIcon from "@mui/icons-material/Mail";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import Button from "@mui/material/Button";
 import { useContext } from "react";
-import { UserContext } from "../context/UserContext";
-import { useLogout } from "../hooks/useLogout";
 import { ThemeContext } from "../context/ThemeContext";
 import { ThemeProvider } from "@mui/material/styles";
 import { CartContext } from "../context/CartContext";
+import { useDispatch, useSelector } from "react-redux";
+import { login, logout } from "../slices/userSlice";
+import { useNavigate } from "react-router-dom";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -65,20 +66,27 @@ export default function Navbar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const { cart } = useContext(CartContext);
-  const { user } = useContext(UserContext);
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const pages = ["men", "women", "kids"];
-  const { logout } = useLogout();
   const { myTheme } = useContext(ThemeContext);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleLogout = () => {
-    logout();
+    dispatch(logout());
+  };
+
+  const handleLogin = () => {
+    navigate("/login");
+    dispatch(login());
   };
 
   const handleShoppingCartClick = (e) => {
-    console.log("hi");
+    console.log("handle shopping cart click");
     // const response = await fetch('http://localhost:8000/items/', {
     //   method: 'POST',
     //   headers: {
@@ -124,7 +132,11 @@ export default function Navbar() {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleLogout}>Logout</MenuItem>
+      {user ? (
+        <MenuItem onClick={handleLogin}>Login</MenuItem>
+      ) : (
+        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+      )}
     </Menu>
   );
 

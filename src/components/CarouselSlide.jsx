@@ -2,7 +2,6 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import ItemDetails from "./ItemDetails";
-import { StyledEngineProvider, CssVarsProvider } from "@mui/joy/styles";
 
 const CarouselSlide = ({ items }) => {
   var settings = {
