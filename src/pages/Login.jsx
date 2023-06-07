@@ -118,6 +118,7 @@ export default function SignIn() {
                 </Link>
               </Grid>
             </Grid>
+            <p>{user && user.isError ? "Invalid gmail or password" : ""}</p>
           </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />

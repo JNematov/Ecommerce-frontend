@@ -22,7 +22,7 @@ const Home = () => {
   }, []);
 
   return (
-    <Box className="Home" sx={{ width: 1100, mx: "auto" }}>
+    <Box className="Home" sx={{ mx: "auto" }}>
       {items && <CarouselSlide items={items} />}
     </Box>
   );
